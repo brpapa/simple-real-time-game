@@ -1,15 +1,28 @@
 import { createGame } from './js/game.js'
 import { createKeyboardListener } from './js/keyboard-listener.js'
+import { createScoreboardManager } from './js/scoreboard-manager.js'
 import { renderScreen } from './js/render.js'
 
-const game = createGame(document)
+const scoreboardManager = createScoreboardManager(document)
+const game = createGame(scoreboardManager)
 const keyboardListener = createKeyboardListener(document)
 
 function setScreen({ width, height }, id) {
 	const screenEl = document.querySelector('#screen')
 	screenEl.setAttribute('width', width)
-	screenEl.setAttribute('height', height)
-	renderScreen(screenEl, game, requestAnimationFrame, id)
+   screenEl.setAttribute('height', height)
+
+   const context = screenEl.getContext('2d')
+	renderScreen(
+      id,
+		game,
+		document,
+      context,
+      width,
+      height,
+		scoreboardManager,
+		requestAnimationFrame
+	)
 }
 
 /* network */
@@ -27,37 +40,32 @@ const handlersFn = {
 		let { id } = socket
 		setScreen(state.screen, id)
 
-		game.setState(state)
 		keyboardListener.setPlayerId(id)
+		keyboardListener.subscribe(game.moveCurrPlayer)
 
-		keyboardListener.subscribe(game.movePlayer)
-		keyboardListener.subscribe(({ event, data }) => {
-			delete data.id // segurança: usuário pode enviar outro id, mas o server já consegue saber pelo socket
+		game.setState(state)
 
+		game.subscribe(({ event, data }) => {
 			// console.log('Emitting move-player:', data)
 			socket.emit(event, data)
 		})
 	},
 	'add-player': (data) => {
-      game.addPlayer(data)
+		game.addPlayer(data)
 	},
 	'remove-player': (data) => {
 		game.removePlayer(data)
-	},
-	'move-player': (data) => {
-		if (data.id !== socket.id) {
-			game.movePlayer({ data })
-		}
 	},
 	'add-fruit': (data) => {
 		game.addFruit(data)
 	},
 	'remove-fruit': (data) => {
 		game.removeFruit(data)
-   },
-   'update-player-score': (data) => {
-      game.updatePlayerScore(data)
-   }
+	},
+	'update-player': (data) => {
+		// console.log('Updating other player:', data)
+		game.updatePlayer(data)
+	}
 }
 
 for (event in handlersFn) {

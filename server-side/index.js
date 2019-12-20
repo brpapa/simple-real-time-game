@@ -7,7 +7,7 @@ server.listen(3000, () => {
 })
 
 const createGame = require('./game')
-const game = createGame(30, 30)
+const game = createGame(20, 20)
 
 /* network */
 
@@ -23,14 +23,20 @@ sockets.on('connect', (socket) => {
 
 	socket.emit('setup', game.state)
 	game.addPlayer({ id })
-	game.startFruitGenerate(4000)
+	game.startFruitGenerate(1000)
 
 	socket.on('disconnect', () => {
 		console.log(`Client disconnected: ${id}`)
 		game.removePlayer({ id })
 	})
 
-	socket.on('move-player', (data) => {
+   socket.on('move-player', (data) => {
 		game.movePlayer({ id, ...data })
+
+      // para todos os sockets conectados, com excessão do socket.id
+		socket.broadcast.emit('update-player', {
+			id,
+         newPlayerState: game.state.players[id]
+      })
 	})
 })

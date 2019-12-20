@@ -1,14 +1,14 @@
 module.exports = function createGame(width, height) {
 	const state = {
-		players: {},
-		fruits: {},
+		players: {}, // id: {x, y, score}
+		fruits: {},  // id: {x, y, color}
 		screen: {
 			width,
 			height
 		}
 	}
 
-	const observersFn = []
+   const observersFn = []
 	function subscribe(observerFn) {
 		observersFn.push(observerFn)
 	}
@@ -41,14 +41,16 @@ module.exports = function createGame(width, height) {
 	}
 
 	function startFruitGenerate(frequency) {
-		let { width, height } = state.screen
+      let { width, height } = state.screen
+      let h = 0
+
 		setInterval(() => {
 			addFruit({
 				id: Math.floor(Math.random() * width * height ** 2),
 				x: Math.floor(Math.random() * width),
 				y: Math.floor(Math.random() * height),
-				color: `rgba(${Math.random() * 255}, ${Math.random() *
-					255}, 255, 0.125)`
+            // color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, 255, 0.175)`
+            color: `hsla(${(h++)%360}deg, 100%, 70%, 0.5)`
 			})
 		}, frequency)
 	}
@@ -70,76 +72,48 @@ module.exports = function createGame(width, height) {
 		})
 	}
 
-	function updatePlayerScore({ id, newScore }) {
-		state.players[id].score = newScore
+   function movePlayer({ id, toward }) {
+      // atualiza state do player (x, y e score)
 
-		notifyAll({
-			event: 'update-player-score',
-			data: { id, newScore }
-		})
-	}
-
-	function movePlayer({ id, keyPressed }) {
 		let { width, height } = state.screen
-		function up(player) {
-			player.y = player.y == 0 ? height - 1 : player.y - 1
-		}
-		function right(player) {
-			player.x = (player.x + 1) % width
-		}
-		function down(player) {
-			player.y = (player.y + 1) % height
-		}
-		function left(player) {
-			player.x = player.x == 0 ? width - 1 : player.x - 1
-		}
-
 		const acceptedMoves = {
-			ArrowUp: up,
-			w: up,
-			W: up,
-			ArrowRight: right,
-			d: right,
-			D: right,
-			ArrowDown: down,
-			s: down,
-			S: down,
-			ArrowLeft: left,
-			a: left,
-			A: left
+			up: (player) => {
+				player.y = player.y == 0 ? height - 1 : player.y - 1
+			},
+			right: (player) => {
+				player.x = (player.x + 1) % width
+			},
+			down: (player) => {
+				player.y = (player.y + 1) % height
+			},
+			left: (player) => {
+				player.x = player.x == 0 ? width - 1 : player.x - 1
+			}
 		}
 
 		const player = state.players[id]
-		const moveFn = acceptedMoves[keyPressed]
+		const moveFn = acceptedMoves[toward]
 
 		if (player && moveFn) {
 			moveFn(player)
-			checkForFruitCollision(id)
 
-			notifyAll({
-				event: 'move-player',
-				data: { id, keyPressed }
-			})
+			let qty = countFruitCollision(player)
+			player.score += qty
 		}
 	}
 
-	function checkForFruitCollision(playerId) {
-		const player = state.players[playerId]
-
+	function countFruitCollision(playerState) {
       let qty = 0
+      
 		for (let fruitId in state.fruits) {
 			const fruit = state.fruits[fruitId]
-			if (fruit.x === player.x && fruit.y === player.y) {
+			if (fruit.x === playerState.x && fruit.y === playerState.y) {
 				removeFruit({ id: fruitId })
 				qty++
 			}
       }
-      if (qty > 0) {
-         updatePlayerScore({
-            id: playerId,
-            newScore: player.score + qty
-         })
-      }
+      
+		return qty
 	}
 
 	// métodos acessíveis fora do escopo

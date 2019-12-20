@@ -1,11 +1,19 @@
 const colors = {
-	enemy: '#21233B',
-	you: '#010'
+	otherPlayer: '#999',
+	currPlayer: '#000'
 }
 
-export function renderScreen(screenEl, game, requestAnimationFrame, currId) {
-   const context = screenEl.getContext('2d')
-	context.clearRect(0, 0, screenEl.width, screenEl.height)
+export function renderScreen(
+	currId,
+	game,
+	document,
+   context,
+   width,
+   height,
+	scoreboardManager,
+	requestAnimationFrame
+) {
+	context.clearRect(0, 0, width, height)
 
 	const { players, fruits } = game.state
 	for (let id in fruits) {
@@ -15,17 +23,35 @@ export function renderScreen(screenEl, game, requestAnimationFrame, currId) {
 	}
 	for (let id in players) {
 		let { x, y } = players[id]
-		context.fillStyle = colors.enemy
+		context.fillStyle = colors.otherPlayer
 		context.fillRect(x, y, 1, 1)
 	}
 
 	const currPlayer = players[currId]
 	if (currPlayer) {
-		context.fillStyle = colors.you
+		context.fillStyle = colors.currPlayer
 		context.fillRect(currPlayer.x, currPlayer.y, 1, 1)
 	}
 
+	// scoreboard
+	const playerEls = document.querySelectorAll('#scoreboard .player')
+   const scoreEls = document.querySelectorAll('#scoreboard .score')
+   const { playersByScore } = scoreboardManager
+	for (let i = 0; i < playersByScore.length; i++) {
+		playerEls[i].innerHTML = playersByScore[i].id
+		scoreEls[i].innerHTML = playersByScore[i].score
+	}
+
 	requestAnimationFrame(() => {
-		renderScreen(screenEl, game, requestAnimationFrame, currId)
+		renderScreen(
+			currId,
+			game,
+			document,
+         context,
+         width,
+         height,
+			scoreboardManager,
+			requestAnimationFrame
+		)
 	})
 }
