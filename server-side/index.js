@@ -13,20 +13,20 @@ const game = createGame(20, 20)
 
 // todas as vezes q uma funcao de game alteram o state, um evento é emitido para todos os clients
 game.subscribe(({ event, data }) => {
-	// console.log(`Emitting ${event}`)
-	sockets.emit(event, data)
+   // console.log(`Emitting ${event}`)
+   sockets.emit(event, data)
 })
 
 sockets.on('connect', (socket) => {
 	let { id } = socket
-	console.log(`Client connected: ${id}`)
+	// console.log(`Client connected: ${id}`)
 
 	socket.emit('setup', game.state)
 	game.addPlayer({ id })
-	game.startFruitGenerate(1000)
+	game.startFruitGenerate(2500)
 
 	socket.on('disconnect', () => {
-		console.log(`Client disconnected: ${id}`)
+		// console.log(`Client disconnected: ${id}`)
 		game.removePlayer({ id })
 	})
 

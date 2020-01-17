@@ -3,14 +3,12 @@ const colors = {
 	currPlayer: '#000'
 }
 
-export function renderScreen(
+export function renderCanvas(
 	currId,
 	game,
-	document,
    context,
    width,
    height,
-	scoreboardManager,
 	requestAnimationFrame
 ) {
 	context.clearRect(0, 0, width, height)
@@ -33,24 +31,13 @@ export function renderScreen(
 		context.fillRect(currPlayer.x, currPlayer.y, 1, 1)
 	}
 
-	// scoreboard
-	const playerEls = document.querySelectorAll('#scoreboard .player')
-   const scoreEls = document.querySelectorAll('#scoreboard .score')
-   const { playersByScore } = scoreboardManager
-	for (let i = 0; i < playersByScore.length; i++) {
-		playerEls[i].innerHTML = playersByScore[i].id
-		scoreEls[i].innerHTML = playersByScore[i].score
-	}
-
 	requestAnimationFrame(() => {
-		renderScreen(
+		renderCanvas(
 			currId,
 			game,
-			document,
          context,
          width,
          height,
-			scoreboardManager,
 			requestAnimationFrame
 		)
 	})

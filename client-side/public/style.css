@@ -1,39 +1,52 @@
+@import url('./assets/fonts/inter/inter.css');
+html {
+	font-family: 'Inter', sans-serif;
+}
+@supports (font-variation-settings: normal) {
+	h1 {
+		letter-spacing: -0.055em;
+		font-size: 64px;
+		font-weight: 750;
+		line-height: 0.9em;
+		text-indent: -0.03em;
+		margin-bottom: 4rem;
+		margin-top: 10px;
+	}
+}
+
 * {
 	margin: 0;
 	padding: 0;
 	border: 0;
 }
 
-@import url('./assets/fonts/inter/inter.css');
-html {
-	font-family: 'Inter', sans-serif;
-}
-@supports (font-variation-settings: normal) {
-   h1 {
-      letter-spacing: -0.055em;
-      font-size: 64px;
-		font-weight: 750;
-		line-height: 0.9em;
-		text-indent: -0.03em;
-		margin-bottom: 4rem;
-      margin-top: 10px;
-   }
-}
-
 #screen {
-   background-color: white;
-   border: 1px solid #eee;
-   /* box-shadow: 0 0 20px 12px rgba(0, 0, 0, 0.025); */
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	margin: auto;
+
+	background-color: white;
+	border: 1px solid #eee;
+	/* box-shadow: 0 0 20px 12px rgba(0, 0, 0, 0.025); */
 
 	image-rendering: pixelated; /* não borra os pixels */
 	image-rendering: crisp-edges;
 	image-rendering: -moz-crisp-edges;
 
 	/* apenas 'estica' o tamanho passado no html */
-	height: 80vh;
+	height: 80vh; /*! se height < width */
+	/* width: 80vw; */ /*! se height > width */
 }
 
-#scoreboard {
-   position: fixed;
-   right: 0px;
+table#scoreboard {
+	position: fixed;
+	top: 10vh;
+	left: 20px;
+
+	text-align: center;
+	width: fit-content;
+	background-color: rgba(255, 255, 255, 0.7);
 }

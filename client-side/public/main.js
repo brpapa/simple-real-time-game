@@ -1,26 +1,24 @@
 import { createGame } from './js/game.js'
 import { createKeyboardListener } from './js/keyboard-listener.js'
 import { createScoreboardManager } from './js/scoreboard-manager.js'
-import { renderScreen } from './js/render.js'
+import { renderCanvas } from './js/render.js'
 
 const scoreboardManager = createScoreboardManager(document)
 const game = createGame(scoreboardManager)
 const keyboardListener = createKeyboardListener(document)
 
 function setScreen({ width, height }, id) {
-	const screenEl = document.querySelector('#screen')
+   const screenEl = document.querySelector('#screen')
 	screenEl.setAttribute('width', width)
    screenEl.setAttribute('height', height)
-
+   
    const context = screenEl.getContext('2d')
-	renderScreen(
+	renderCanvas(
       id,
 		game,
-		document,
       context,
       width,
       height,
-		scoreboardManager,
 		requestAnimationFrame
 	)
 }

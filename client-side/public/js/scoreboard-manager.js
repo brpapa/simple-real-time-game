@@ -13,27 +13,41 @@ export function createScoreboardManager(document) {
 
 		tbodyEl.appendChild(trEl)
 	}
-	function removeTableRow() {
-		tbodyEl.removeChild(tbodyEl.firstChild())
-	}
+   function removeTableRow() {
+      tbodyEl.removeChild(document.querySelector('#scoreboard tbody tr'))
+   }
+   function renderTable() {
+      const playerEls = document.querySelectorAll('#scoreboard .player')
+      const scoreEls = document.querySelectorAll('#scoreboard .score')
+      
+		for (let i = 0; i < playersByScore.length; i++) {
+			playerEls[i].innerHTML = playersByScore[i].id.slice(0, 10)+"..."
+			scoreEls[i].innerHTML = playersByScore[i].score
+		}
+   }
 
 	function addPlayer({ id, score }) {
 		appendTableRow()
-		playersByScore.push({ id, score })
+      playersByScore.push({ id, score })
+      
+      renderTable()
 	}
 	function removePlayer({ id }) {
 		removeTableRow()
-		playersByScore = playersByScore.filter((p) => p.id !== id)
+      playersByScore = playersByScore.filter((p) => p.id !== id)
+      
+      renderTable()
 	}
 	function updatePlayer({ id, score }) {
 		const player = playersByScore.find((p) => p.id === id)
 		player.score = score
 
-		playersByScore = playersByScore.sort((a, b) => b.score - a.score)
+      playersByScore = playersByScore.sort((a, b) => b.score - a.score)
+      
+      renderTable()
 	}
 
    return {
-      playersByScore,
 		addPlayer,
 		removePlayer,
 		updatePlayer
