@@ -3,17 +3,17 @@
 	"author": "Bruno Papa <bruno.papa@hotmail.com>",
 	"license": "MIT",
 	"scripts": {
-		"start-server": "nodemon ./server-side/index.js",
-		"start-client": "serve ./client-side/public",
-		"start": "concurrently --kill-others \"yarn start-server\" \"yarn start-client\""
+		"start-server": "nodemon ./server/index.js",
+		"start-web-client": "serve ./web-client/public",
+		"start": "concurrently --kill-others \"yarn start-server\" \"yarn start-web-client\""
 	},
 	"dependencies": {
 		"express": "^4.17.1",
-		"socket.io": "^2.3.0"
+		"socket.io": "^2.3.0",
+		"serve": "^11.3.0"
 	},
 	"devDependencies": {
 		"concurrently": "^5.0.2",
-		"nodemon": "^2.0.2",
-		"serve": "^11.3.0"
+		"nodemon": "^2.0.2"
 	}
 }

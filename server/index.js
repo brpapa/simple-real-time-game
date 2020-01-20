@@ -23,7 +23,7 @@ sockets.on('connect', (socket) => {
 
 	socket.emit('setup', game.state)
 	game.addPlayer({ id })
-	game.startFruitGenerate(2500)
+	game.startFruitGenerate(25000)
 
 	socket.on('disconnect', () => {
 		// console.log(`Client disconnected: ${id}`)
