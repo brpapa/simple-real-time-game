@@ -13,8 +13,8 @@ const game = createGame(20, 20)
 
 // todas as vezes q uma funcao de game alteram o state, um evento é emitido para todos os clients
 game.subscribe(({ event, data }) => {
-   // console.log(`Emitting ${event}`)
-   sockets.emit(event, data)
+	// console.log(`Emitting ${event}`)
+	sockets.emit(event, data)
 })
 
 sockets.on('connect', (socket) => {
@@ -30,13 +30,13 @@ sockets.on('connect', (socket) => {
 		game.removePlayer({ id })
 	})
 
-   socket.on('move-player', (data) => {
+	socket.on('move-player', (data) => {
 		game.movePlayer({ id, ...data })
 
-      // para todos os sockets conectados, com excessão do socket.id
+		// para todos os sockets conectados, com excessão do socket.id
 		socket.broadcast.emit('update-player', {
 			id,
-         newPlayerState: game.state.players[id]
-      })
+			newPlayerState: game.state.players[id]
+		})
 	})
 })

@@ -8,19 +8,12 @@ const game = createGame(scoreboardManager)
 const keyboardListener = createKeyboardListener(document)
 
 function setScreen({ width, height }, id) {
-   const screenEl = document.querySelector('#screen')
+	const screenEl = document.querySelector('#screen')
 	screenEl.setAttribute('width', width)
-   screenEl.setAttribute('height', height)
-   
-   const context = screenEl.getContext('2d')
-	renderCanvas(
-      id,
-		game,
-      context,
-      width,
-      height,
-		requestAnimationFrame
-	)
+	screenEl.setAttribute('height', height)
+
+	const context = screenEl.getContext('2d')
+	renderCanvas(id, game, context, width, height, requestAnimationFrame)
 }
 
 /* network */

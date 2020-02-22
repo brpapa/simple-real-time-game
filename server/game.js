@@ -1,14 +1,14 @@
 module.exports = function createGame(width, height) {
 	const state = {
 		players: {}, // id: {x, y, score}
-		fruits: {},  // id: {x, y, color}
+		fruits: {}, // id: {x, y, color}
 		screen: {
 			width,
 			height
 		}
 	}
 
-   const observersFn = []
+	const observersFn = []
 	function subscribe(observerFn) {
 		observersFn.push(observerFn)
 	}
@@ -41,16 +41,16 @@ module.exports = function createGame(width, height) {
 	}
 
 	function startFruitGenerate(frequency) {
-      let { width, height } = state.screen
-      let h = 0
+		let { width, height } = state.screen
+		let h = 0
 
 		setInterval(() => {
 			addFruit({
 				id: Math.floor(Math.random() * width * height ** 2),
 				x: Math.floor(Math.random() * width),
 				y: Math.floor(Math.random() * height),
-            // color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, 255, 0.175)`
-            color: `hsla(${(h++)%360}deg, 100%, 70%, 0.5)`
+				// color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, 255, 0.175)`
+				color: `hsla(${h++ % 360}deg, 100%, 70%, 0.5)`
 			})
 		}, frequency)
 	}
@@ -72,8 +72,8 @@ module.exports = function createGame(width, height) {
 		})
 	}
 
-   function movePlayer({ id, toward }) {
-      // atualiza state do player (x, y e score)
+	function movePlayer({ id, toward }) {
+		// atualiza state do player (x, y e score)
 
 		let { width, height } = state.screen
 		const acceptedMoves = {
@@ -103,16 +103,16 @@ module.exports = function createGame(width, height) {
 	}
 
 	function countFruitCollision(playerState) {
-      let qty = 0
-      
+		let qty = 0
+
 		for (let fruitId in state.fruits) {
 			const fruit = state.fruits[fruitId]
 			if (fruit.x === playerState.x && fruit.y === playerState.y) {
 				removeFruit({ id: fruitId })
 				qty++
 			}
-      }
-      
+		}
+
 		return qty
 	}
 
